@@ -25,7 +25,10 @@ const response = await request({
     curve: 'ed25519',
   },
 });
-if (!response === '0x00c9aaf347832dc3b1dbb7aab4f41e5e04c64446b819c0761571c27b9f90eacb27') {
+if (
+  !response ===
+  '0x00c9aaf347832dc3b1dbb7aab4f41e5e04c64446b819c0761571c27b9f90eacb27'
+) {
   throw new Error('Invalid public key');
 }
 ```
@@ -53,7 +56,10 @@ const response = request({
     message: 'some message',
   },
 });
-if (!response === '0x10804459eef93e52f9f01f38775ce4a21eb818d70cb637c602267f48c4e129fb2f68bc24bf74c84a1950227ea76d7c1ce860e4867941ef793c83399621c69c0d') {
+if (
+  !response ===
+  '0x10804459eef93e52f9f01f38775ce4a21eb818d70cb637c602267f48c4e129fb2f68bc24bf74c84a1950227ea76d7c1ce860e4867941ef793c83399621c69c0d'
+) {
   throw new Error('Invalid signature');
 }
 ```
