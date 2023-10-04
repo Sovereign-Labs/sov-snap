@@ -5,14 +5,16 @@ import {
   connectSnap,
   getSnap,
   isLocalSnap,
-  sendHello,
+  getPublicKey,
+  signMessageSecp256k1,
   shouldDisplayReconnectButton,
+  signMessageEd25519,
 } from '../utils';
 import {
   ConnectButton,
   InstallFlaskButton,
-  ReconnectButton,
-  SendHelloButton,
+  GetPublicKeyButton,
+  SignMessageButton,
   Card,
 } from '../components';
 import { defaultSnapOrigin } from '../config';
@@ -123,9 +125,38 @@ const Index = () => {
     }
   };
 
-  const handleSendHelloClick = async () => {
+  const handleGetPublicKey = async () => {
     try {
-      await sendHello();
+      const pk = await getPublicKey();
+      console.log(`Public key retrieved: ${pk}`);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
+  const handleSignMessageSecp256k1 = async () => {
+    try {
+      const message = Math.random().toString();
+      const encoder = new TextEncoder();
+      const byteArray = encoder.encode(message);
+
+      const signature = await signMessageSecp256k1(byteArray);
+      console.log(`Signature: ${signature}`);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
+  const handleSignMessageEd25519 = async () => {
+    try {
+      const message = Math.random().toString();
+      const encoder = new TextEncoder();
+      const byteArray = encoder.encode(message);
+
+      const signature = await signMessageEd25519(byteArray);
+      console.log(`Signature: ${signature}`);
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -135,10 +166,10 @@ const Index = () => {
   return (
     <Container>
       <Heading>
-        Welcome to <Span>template-snap</Span>
+        Welcome to <Span>sov-snap</Span>
       </Heading>
       <Subtitle>
-        Get started by editing <code>src/index.ts</code>
+        <Span>sov-snap</Span> is a snap for the Sovereign SDK.
       </Subtitle>
       <CardContainer>
         {state.error && (
@@ -162,7 +193,7 @@ const Index = () => {
             content={{
               title: 'Connect',
               description:
-                'Get started by connecting to and installing the example snap.',
+                'Get started by connecting to and installing the Sovereign SDK snap.',
               button: (
                 <ConnectButton
                   onClick={handleConnectClick}
@@ -173,30 +204,14 @@ const Index = () => {
             disabled={!isMetaMaskReady}
           />
         )}
-        {shouldDisplayReconnectButton(state.installedSnap) && (
-          <Card
-            content={{
-              title: 'Reconnect',
-              description:
-                'While connected to a local running snap this button will always be displayed in order to update the snap if a change is made.',
-              button: (
-                <ReconnectButton
-                  onClick={handleConnectClick}
-                  disabled={!state.installedSnap}
-                />
-              ),
-            }}
-            disabled={!state.installedSnap}
-          />
-        )}
         <Card
           content={{
-            title: 'Send Hello message',
+            title: 'Get public key',
             description:
-              'Display a custom message within a confirmation screen in MetaMask.',
+              'Get the public key of the installed snap. Log on the console.',
             button: (
-              <SendHelloButton
-                onClick={handleSendHelloClick}
+              <GetPublicKeyButton
+                onClick={handleGetPublicKey}
                 disabled={!state.installedSnap}
               />
             ),
@@ -208,14 +223,44 @@ const Index = () => {
             !shouldDisplayReconnectButton(state.installedSnap)
           }
         />
-        <Notice>
-          <p>
-            Please note that the <b>snap.manifest.json</b> and{' '}
-            <b>package.json</b> must be located in the server root directory and
-            the bundle must be hosted at the location specified by the location
-            field.
-          </p>
-        </Notice>
+        <Card
+          content={{
+            title: 'Sign message Secp256k1',
+            description:
+              'Sign a random message with the installed snap. Log on the console.',
+            button: (
+              <SignMessageButton
+                onClick={handleSignMessageSecp256k1}
+                disabled={!state.installedSnap}
+              />
+            ),
+          }}
+          disabled={!state.installedSnap}
+          fullWidth={
+            isMetaMaskReady &&
+            Boolean(state.installedSnap) &&
+            !shouldDisplayReconnectButton(state.installedSnap)
+          }
+        />
+        <Card
+          content={{
+            title: 'Sign message ed25519',
+            description:
+              'Sign a random message with the installed snap. Log on the console.',
+            button: (
+              <SignMessageButton
+                onClick={handleSignMessageEd25519}
+                disabled={!state.installedSnap}
+              />
+            ),
+          }}
+          disabled={!state.installedSnap}
+          fullWidth={
+            isMetaMaskReady &&
+            Boolean(state.installedSnap) &&
+            !shouldDisplayReconnectButton(state.installedSnap)
+          }
+        />
       </CardContainer>
     </Container>
   );
