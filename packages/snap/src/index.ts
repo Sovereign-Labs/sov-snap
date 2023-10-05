@@ -24,6 +24,8 @@ import type { GetBip32PublicKeyParams, SignMessageParams } from './types';
  */
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
+    // the return is a plain hex string
+    // https://docs.metamask.io/snaps/reference/rpc-api/#returns-5
     case 'getPublicKey':
       return await snap.request({
         method: 'snap_getBip32PublicKey',
@@ -39,11 +41,24 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           curve,
         },
       });
+
+      // we define a SLIP-10 node from the response
+      // https://docs.metamask.io/snaps/reference/rpc-api/#returns-4
       const node = await SLIP10Node.fromJSON(json);
 
+      // while SLIP-10 does support NIST P-256, Metamask doesn't under the claim of insufficient
+      // demand.
+      // https://github.com/satoshilabs/slips/blob/master/slip-0010.md#master-key-generation
+      // https://github.com/MetaMask/key-tree/blob/main/README.md#usage
       assert(node.privateKey);
       assert(curve === 'ed25519' || curve === 'secp256k1');
 
+      // assert the user's approval of the provided message. Note: this message will be a raw bytes
+      // representation. A human-friendly format is currently not supported by the API as the
+      // conversion is expected to be performed before the interaction with the Snap.
+      //
+      // For more information, refer to the tracking issue:
+      // https://github.com/Sovereign-Labs/sovereign-sdk/issues/982
       const approved = await snap.request({
         method: 'snap_dialog',
         params: {
@@ -62,25 +77,22 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         throw providerErrors.userRejectedRequest();
       }
 
-      if (curve === 'ed25519') {
-        const signed = await signEd25519(
-          valueToBytes(message),
-          remove0x(node.privateKey),
-        );
-        return bytesToHex(signed);
+      const messageBytes = valueToBytes(message);
+      const privateKey = remove0x(node.privateKey);
+
+      let signed;
+      switch (curve) {
+        case 'ed25519':
+          signed = await signEd25519(messageBytes, privateKey);
+          break;
+        case 'secp256k1':
+          signed = await signSecp256k1(messageBytes, privateKey);
+          break;
+        default:
+          throw new Error(`Unsupported curve: ${String(curve)}.`);
       }
 
-      if (curve === 'secp256k1') {
-        const signed = await signSecp256k1(
-          valueToBytes(message),
-          remove0x(node.privateKey),
-        );
-        return bytesToHex(signed);
-      }
-
-      // This is guaranteed to never happen because of the `assert` above. But
-      // TypeScript doesn't know that, so we need to throw an error here.
-      throw new Error(`Unsupported curve: ${String(curve)}.`);
+      return bytesToHex(signed);
     }
 
     default: {

@@ -102,6 +102,10 @@ export const SignMessageButton = (props: ComponentProps<typeof Button>) => {
   return <Button {...props}>Sign message</Button>;
 };
 
+export const ExecuteButton = (props: ComponentProps<typeof Button>) => {
+  return <Button {...props}>Execute</Button>;
+};
+
 export const HeaderButtons = ({
   state,
   onConnectClick,

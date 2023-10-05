@@ -1,21 +1,12 @@
 import { useContext } from 'react';
 import styled from 'styled-components';
 import { MetamaskActions, MetaMaskContext } from '../hooks';
-import {
-  connectSnap,
-  getSnap,
-  isLocalSnap,
-  getPublicKey,
-  signMessageSecp256k1,
-  shouldDisplayReconnectButton,
-  signMessageEd25519,
-} from '../utils';
+import { connectSnap, getSnap, isLocalSnap } from '../utils';
 import {
   ConnectButton,
   InstallFlaskButton,
-  GetPublicKeyButton,
-  SignMessageButton,
   Card,
+  Sovereign,
 } from '../components';
 import { defaultSnapOrigin } from '../config';
 
@@ -66,25 +57,6 @@ const CardContainer = styled.div`
   margin-top: 1.5rem;
 `;
 
-const Notice = styled.div`
-  background-color: ${({ theme }) => theme.colors.background.alternative};
-  border: 1px solid ${({ theme }) => theme.colors.border.default};
-  color: ${({ theme }) => theme.colors.text.alternative};
-  border-radius: ${({ theme }) => theme.radii.default};
-  padding: 2.4rem;
-  margin-top: 2.4rem;
-  max-width: 60rem;
-  width: 100%;
-
-  & > * {
-    margin: 0;
-  }
-  ${({ theme }) => theme.mediaQueries.small} {
-    margin-top: 1.2rem;
-    padding: 1.6rem;
-  }
-`;
-
 const ErrorMessage = styled.div`
   background-color: ${({ theme }) => theme.colors.error.muted};
   border: 1px solid ${({ theme }) => theme.colors.error.default};
@@ -119,44 +91,6 @@ const Index = () => {
         type: MetamaskActions.SetInstalled,
         payload: installedSnap,
       });
-    } catch (e) {
-      console.error(e);
-      dispatch({ type: MetamaskActions.SetError, payload: e });
-    }
-  };
-
-  const handleGetPublicKey = async () => {
-    try {
-      const pk = await getPublicKey();
-      console.log(`Public key retrieved: ${pk}`);
-    } catch (e) {
-      console.error(e);
-      dispatch({ type: MetamaskActions.SetError, payload: e });
-    }
-  };
-
-  const handleSignMessageSecp256k1 = async () => {
-    try {
-      const message = Math.random().toString();
-      const encoder = new TextEncoder();
-      const byteArray = encoder.encode(message);
-
-      const signature = await signMessageSecp256k1(byteArray);
-      console.log(`Signature: ${signature}`);
-    } catch (e) {
-      console.error(e);
-      dispatch({ type: MetamaskActions.SetError, payload: e });
-    }
-  };
-
-  const handleSignMessageEd25519 = async () => {
-    try {
-      const message = Math.random().toString();
-      const encoder = new TextEncoder();
-      const byteArray = encoder.encode(message);
-
-      const signature = await signMessageEd25519(byteArray);
-      console.log(`Signature: ${signature}`);
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -204,63 +138,7 @@ const Index = () => {
             disabled={!isMetaMaskReady}
           />
         )}
-        <Card
-          content={{
-            title: 'Get public key',
-            description:
-              'Get the public key of the installed snap. Log on the console.',
-            button: (
-              <GetPublicKeyButton
-                onClick={handleGetPublicKey}
-                disabled={!state.installedSnap}
-              />
-            ),
-          }}
-          disabled={!state.installedSnap}
-          fullWidth={
-            isMetaMaskReady &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
-        />
-        <Card
-          content={{
-            title: 'Sign message Secp256k1',
-            description:
-              'Sign a random message with the installed snap. Log on the console.',
-            button: (
-              <SignMessageButton
-                onClick={handleSignMessageSecp256k1}
-                disabled={!state.installedSnap}
-              />
-            ),
-          }}
-          disabled={!state.installedSnap}
-          fullWidth={
-            isMetaMaskReady &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
-        />
-        <Card
-          content={{
-            title: 'Sign message ed25519',
-            description:
-              'Sign a random message with the installed snap. Log on the console.',
-            button: (
-              <SignMessageButton
-                onClick={handleSignMessageEd25519}
-                disabled={!state.installedSnap}
-              />
-            ),
-          }}
-          disabled={!state.installedSnap}
-          fullWidth={
-            isMetaMaskReady &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
-        />
+        <Sovereign />
       </CardContainer>
     </Container>
   );
