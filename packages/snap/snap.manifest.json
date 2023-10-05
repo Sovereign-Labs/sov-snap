@@ -7,7 +7,7 @@
     "url": "https://github.com/Sovereign-Labs/sov-snap.git"
   },
   "source": {
-    "shasum": "x69w67EaFgizEF1Vkn7tf79rwrkW4RPwfwNpYKDAjtI=",
+    "shasum": "Pt45qPA3Pbvv98q/hNzvuw45cpSn+VCsWZcabeXjrzQ=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -25,21 +25,37 @@
     "snap_dialog": {},
     "snap_getBip32Entropy": [
       {
-        "path": ["m", "44'", "1'"],
+        "path": [
+          "m",
+          "44'",
+          "1'"
+        ],
         "curve": "secp256k1"
       },
       {
-        "path": ["m", "44'", "1'"],
+        "path": [
+          "m",
+          "44'",
+          "1'"
+        ],
         "curve": "ed25519"
       }
     ],
     "snap_getBip32PublicKey": [
       {
-        "path": ["m", "44'", "1'"],
+        "path": [
+          "m",
+          "44'",
+          "1'"
+        ],
         "curve": "secp256k1"
       },
       {
-        "path": ["m", "44'", "1'"],
+        "path": [
+          "m",
+          "44'",
+          "1'"
+        ],
         "curve": "ed25519"
       }
     ]
