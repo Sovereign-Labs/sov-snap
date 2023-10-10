@@ -2,7 +2,13 @@
 
 This snap allows the user to sign transactions.
 
-Metamask requires the [coin type](https://github.com/satoshilabs/slips/blob/master/slip-0044.md#registered-coin-types) to be hardcoded as permission. We are currently setting it to `1: Testnet (all coins)`; if the Snap requires a specific coin, this repository should be cloned, and the coin type replaced in `./snap.manifest.json` as the third node of the `path`.
+This Snap uses the allocated  `1551'` to `SDK-Sovereign SDK`. Given that the coin type is hardcoded per Snap permissions, as in Metamask's design, it will be fixed to `1551 - SDK - Sovereign SDK`.
+
+Metamask requires the  to be hardcoded as permission. We are currently setting it to `1: Testnet (all coins)`; if the Snap requires a specific coin, this repository should be cloned, and the coin type replaced in `./snap.manifest.json` as the third node of the `path`.
+
+The Sovereign SDK MetaMask Snap enables transaction signing for users.
+
+This Snap utilizes the designated [coin type](https://github.com/satoshilabs/slips/blob/master/slip-0044.md#registered-coin-types), specifically 1551, allocated for SDK-Sovereign SDK. As per Snap permissions in Metamask's design, the coin type is hardcoded. If you need a difference coin type, you may fork this repository, replacing the authorized path in the [Snap manifest](./packages/snap/snap.md).
 
 ## Methods
 
@@ -21,7 +27,7 @@ Returns the public key of the wallet as hexadecimal string.
 const response = await request({
   method: 'getPublicKey',
   params: {
-    path: ['m', "44'", "1'"],
+    path: ['m', "44'", "1551'"],
     curve: 'ed25519',
   },
 });
@@ -41,7 +47,7 @@ Will emit a confirmation dialog for the user.
 
 ##### Params
 
-- `path`: The BIP-32 derivation path of the wallet (`string[]`).
+- `path`: The BIP-32 derivation path of the wallet (`string['m', "44'", "1551'", ...]`).
 - `curve`: The curve of the public key (`secp256k1` or `ed25519`).
 - `message`: The message to sign (`bigint | number | string | Uint8Array`).
 
@@ -51,7 +57,7 @@ Will emit a confirmation dialog for the user.
 const response = request({
   method: 'signMessage',
   params: {
-    path: ['m', "44'", "1'"],
+    path: ['m', "44'", "1551'", "0'", "2'", "1'"],
     curve: 'ed25519',
     message: 'some message',
   },

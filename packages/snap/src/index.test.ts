@@ -10,7 +10,7 @@ describe('onRpcRequest', () => {
       const response = await request({
         method: 'getPublicKey',
         params: {
-          path: ['m', "44'", "1'"],
+          path: ['m', "44'", "1551'"],
           curve: 'secp256k1',
         },
       });
@@ -28,7 +28,7 @@ describe('onRpcRequest', () => {
       const response = await request({
         method: 'getPublicKey',
         params: {
-          path: ['m', "44'", "1'"],
+          path: ['m', "44'", "1551'"],
           curve: 'ed25519',
         },
       });
@@ -48,7 +48,7 @@ describe('onRpcRequest', () => {
       const response = request({
         method: 'signMessage',
         params: {
-          path: ['m', "44'", "1'"],
+          path: ['m', "44'", "1551'"],
           curve: 'secp256k1',
           message: 'some message',
         },
@@ -71,7 +71,7 @@ describe('onRpcRequest', () => {
       const response = request({
         method: 'signMessage',
         params: {
-          path: ['m', "44'", "1'"],
+          path: ['m', "44'", "1551'"],
           curve: 'ed25519',
           message: 'some message',
         },

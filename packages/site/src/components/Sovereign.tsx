@@ -95,7 +95,7 @@ export const Sovereign = () => {
           onClick={async () => {
             const { method, curve, keyId, message } = state;
 
-            const path = ['m', "44'", "1'"];
+            const path = ['m', "44'", "1551'"];
             path.push(keyId.toString());
 
             let params;

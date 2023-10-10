@@ -64,7 +64,7 @@ export const getPublicKey = async () => {
       request: {
         method: 'getPublicKey',
         params: {
-          path: ['m', "44'", "1'"],
+          path: ['m', "44'", "1551'"],
           curve: 'secp256k1',
         },
       },
@@ -84,7 +84,7 @@ export const signMessageSecp256k1 = async (message: Uint8Array) => {
       request: {
         method: 'signMessage',
         params: {
-          path: ['m', "44'", "1'"],
+          path: ['m', "44'", "1551'"],
           curve: 'secp256k1',
           message,
         },
@@ -105,7 +105,7 @@ export const signMessageEd25519 = async (message: Uint8Array) => {
       request: {
         method: 'signMessage',
         params: {
-          path: ['m', "44'", "1'"],
+          path: ['m', "44'", "1551'"],
           curve: 'ed25519',
           message,
         },
