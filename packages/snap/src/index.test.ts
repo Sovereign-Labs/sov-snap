@@ -16,7 +16,7 @@ describe('onRpcRequest', () => {
       });
 
       expect(response).toRespondWith(
-        '0x048e129862c1de5ca86468add43b001d32fd34b8113de716ecd63fa355b7f1165f0e76f5dc6095100f9fdaa76ddf28aa3f21406ac5fda7c71ffbedb45634fe2ceb',
+        '0x04237d3c3d7d80442704201691f8b05034cf7cff2e0f60afa77971f02ae640adb9654a5c736938c430fffccc883d42760eb1aaac3a2441485bfa817a089aae7ff5',
       );
 
       await close();
@@ -34,7 +34,7 @@ describe('onRpcRequest', () => {
       });
 
       expect(response).toRespondWith(
-        '0x00c9aaf347832dc3b1dbb7aab4f41e5e04c64446b819c0761571c27b9f90eacb27',
+        '0x00ff3c690d2a58db6d7f97e9ed0aa3455dd54a21246cf71492f36d60bb7c0a659f',
       );
 
       await close();
@@ -59,7 +59,7 @@ describe('onRpcRequest', () => {
       await ui.ok();
 
       expect(await response).toRespondWith(
-        '0x304402202832f86d32a486a33f11f7ccb483b262177d9729d4911d5ff965a84ee53c26ad02202a7e67964e39112de5d2c1a637aaeb59350c76c9350a94845e949dccd54f9c85',
+        '0x3044022037e40728bd555a0b18a9a60e56eb1c3ad3f691c13df947a95c177491a23e8a2f02206eb555dd3061ae3fb13292dc90f742111c4329397e2323746bfa2296a478e4f5',
       );
 
       await close();
@@ -82,7 +82,7 @@ describe('onRpcRequest', () => {
       await ui.ok();
 
       expect(await response).toRespondWith(
-        '0x10804459eef93e52f9f01f38775ce4a21eb818d70cb637c602267f48c4e129fb2f68bc24bf74c84a1950227ea76d7c1ce860e4867941ef793c83399621c69c0d',
+        '0x83207c0ef4117e2cb70fdf6bcce4ed0b54ec2047332205f81f480744375b14ba1239738d0883c21285f96d60259070988b1095e45d7cbb6782393eba2dfdd903',
       );
 
       await close();
