@@ -6,6 +6,7 @@ import { add0x, assert, bytesToHex, remove0x } from '@metamask/utils';
 import { sign as signEd25519 } from '@noble/ed25519';
 import { sign as signSecp256k1 } from '@noble/secp256k1';
 import { serialize } from 'borsh';
+import { Uint64LE } from 'int64-buffer';
 
 import type { GetBip32PublicKeyParams, SignTransactionParams } from './types';
 
@@ -28,9 +29,11 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       });
 
     case 'signTransaction': {
-      const { schema, transaction, curve, ...params } =
+      const { schema, transaction, nonce, curve, ...params } =
         request.params as SignTransactionParams;
 
+      const nonceLe = new Uint64LE(nonce);
+      const nonceBytes = nonceLe.toBuffer();
       const serializedTransaction = serialize(schema, transaction);
 
       const json = await snap.request({
@@ -58,11 +61,11 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           type: DialogType.Confirmation,
           content: panel([
             heading('Signature request'),
-            text(
-              `Do you want to ${curve} sign ${JSON.stringify(
-                transaction,
-              )} with the following public key?`,
-            ),
+            text(`Do you want to ${curve} sign`),
+            copyable(JSON.stringify(transaction)),
+            text(`with nonce`),
+            copyable(String(nonce)),
+            text(`and the following public key?`),
             copyable(add0x(node.publicKey)),
           ]),
         },
@@ -73,14 +76,18 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       }
 
       const privateKey = remove0x(node.privateKey);
+      const signedTransaction = new Uint8Array([
+        ...serializedTransaction,
+        ...nonceBytes,
+      ]);
 
       let signed;
       switch (curve) {
         case 'ed25519':
-          signed = await signEd25519(serializedTransaction, privateKey);
+          signed = await signEd25519(signedTransaction, privateKey);
           break;
         case 'secp256k1':
-          signed = await signSecp256k1(serializedTransaction, privateKey);
+          signed = await signSecp256k1(signedTransaction, privateKey);
           break;
         default:
           throw new Error(`Unsupported curve: ${String(curve)}.`);

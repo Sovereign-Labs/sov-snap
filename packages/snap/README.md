@@ -45,6 +45,7 @@ Will emit a confirmation dialog for the user.
 - `curve`: The curve of the public key (`secp256k1` or `ed25519`).
 - `schema`: A [borsh](https://www.npmjs.com/package/borsh) schema for the transaction.
 - `transaction`: A transaction to be serialized using the provided schema. The signature will be performed over the serialized transaction.
+- `nonce`: An unsigned 64-bits number to be appended to the serialized transaction.
 
 ##### Example
 
@@ -90,12 +91,13 @@ const response = request({
         amount: 1582,
       },
     },
+    nonce: 0,
   },
 });
 
 if (
   !response ===
-  '0xfd2e4b23a3e3f498664af355b341e833324276270a13f9647dd1f043248f92fccaa037d4cfc9d23f13a295f7d505ee13afb2b10cea548890678f9002947cbb0a'
+  '0xe563b3d772572e57bff43e31e449dbc8e98f7580fea10b2ad1ad8278b3edcf5ff5b3a24b85cef3192fcd70452c58e7c968e500da9e290aefadf5ef22a4efbf0d',
 ) {
   throw new Error('Invalid signature');
 }

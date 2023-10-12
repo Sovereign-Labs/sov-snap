@@ -17,6 +17,7 @@ type SovereignState = {
   curve: CurveSelectorState;
   keyId: number;
   message?: string;
+  nonce?: number;
   request?: string;
   response?: string;
 };
@@ -27,6 +28,7 @@ export const Sovereign = () => {
     curve: `secp256k1`,
     keyId: 0,
     message: 'Some signature message...',
+    nonce: 0,
   };
   const [state, setState] = useState(initialState);
 
@@ -97,10 +99,29 @@ export const Sovereign = () => {
           cols={40}
         />
       </div>
+      <div>Nonce:</div>
+      <div>
+        <input
+          type="number"
+          value={state.nonce}
+          onChange={(ev) => {
+            const { value } = ev.target;
+
+            // Allow only positive integers (whole numbers greater than or equal to zero)
+            const regex = /^[0-9\b]+$/u; // Allows digits only
+            if (value === '' || regex.test(value)) {
+              setState({
+                ...state,
+                nonce: parseInt(value, 10),
+              });
+            }
+          }}
+        />
+      </div>
       <div>
         <ExecuteButton
           onClick={async () => {
-            const { method, curve, keyId, message } = state;
+            const { method, curve, keyId, message, nonce } = state;
 
             const path = ['m', "44'", "1551'"];
             path.push(keyId.toString());
@@ -114,6 +135,7 @@ export const Sovereign = () => {
                 transaction: {
                   message: message || '',
                 },
+                nonce,
               };
             } else {
               params = {

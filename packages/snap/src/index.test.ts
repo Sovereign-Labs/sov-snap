@@ -84,6 +84,7 @@ describe('onRpcRequest', () => {
               payload: Array(176).fill(5),
             },
           },
+          nonce: 26,
         },
       });
 
@@ -114,6 +115,7 @@ describe('onRpcRequest', () => {
               amount: 1582,
             },
           },
+          nonce: 0,
         },
       });
 
@@ -122,7 +124,7 @@ describe('onRpcRequest', () => {
       await ui.ok();
 
       expect(await response).toRespondWith(
-        '0xfd2e4b23a3e3f498664af355b341e833324276270a13f9647dd1f043248f92fccaa037d4cfc9d23f13a295f7d505ee13afb2b10cea548890678f9002947cbb0a',
+        '0xe563b3d772572e57bff43e31e449dbc8e98f7580fea10b2ad1ad8278b3edcf5ff5b3a24b85cef3192fcd70452c58e7c968e500da9e290aefadf5ef22a4efbf0d',
       );
 
       await close();
