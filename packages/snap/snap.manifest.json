@@ -7,7 +7,7 @@
     "url": "https://github.com/Sovereign-Labs/sov-snap.git"
   },
   "source": {
-    "shasum": "wOP1ZGD2ciBIysiXTThBibt0cTkaxNKbsFCLXk+Si/c=",
+    "shasum": "M4WoRFL+SjnLWRKANC/7e5s/+nwPabd2hvVY77TCck8=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

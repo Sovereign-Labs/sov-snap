@@ -46,11 +46,6 @@ export type SignTransactionParams = {
   transaction: any;
 
   /**
-   * The nonce of the transaction.
-   */
-  nonce: number;
-
-  /**
    * The BIP-32 path to the account.
    */
   path: string[];
