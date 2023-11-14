@@ -16,17 +16,12 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install Rust
         run: rustup show
-      - name: Install wasm32-wasi
-        run: rustup target add wasm32-wasi
-      - name: Install wasm bin utils
-        run: sudo apt-get install -y binaryen wabt
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
       - run: yarn install --immutable
-      - run: yarn update-wasm
       - run: yarn build
       - run: yarn lint
       - run: yarn test
