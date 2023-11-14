@@ -18,6 +18,10 @@ jobs:
         run: rustup show
       - name: Install wasm32-wasi
         run: rustup target add wasm32-wasi
+      - name: Setup `wasm-tools`
+        uses: bytecodealliance/actions/wasm-tools/setup@v1
+      - name: Run `wasm-tools version`
+        run: "wasm-tools --version"
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
