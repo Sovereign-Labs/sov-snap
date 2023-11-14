@@ -18,10 +18,8 @@ jobs:
         run: rustup show
       - name: Install wasm32-wasi
         run: rustup target add wasm32-wasi
-      - name: Setup wasm binaryen
-        uses: Aandreba/setup-binaryen
-        with:
-          version: 116
+      - name: Install wasm bin utils
+        run: sudo apt-get install -y binaryen
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
