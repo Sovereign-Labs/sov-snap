@@ -1,32 +1,63 @@
+import axios, { AxiosRequestConfig } from 'axios';
 import React, { useState } from 'react';
-import { Schema } from 'borsh';
+import { hexToBytes } from '@metamask/utils';
 import { defaultSnapOrigin } from '../config';
 import { ExecuteButton } from './Buttons';
 
-const callMessageSchema: Schema = {
-  struct: {
-    message: 'string',
-  },
+let jsonRpcId = 0;
+
+type JsonRpcRequest = {
+  jsonrpc: '2.0';
+  method: string;
+  params: any[];
+  id: number;
+};
+
+const jsonRpcRequest = (method: string, params: any[]): JsonRpcRequest => {
+  jsonRpcId += 1;
+  return {
+    jsonrpc: '2.0',
+    method,
+    params,
+    id: jsonRpcId,
+  };
+};
+
+const sendJsonRpcRequest = async (url: string, method: string, params: any[]): Promise<string> => {
+  const requestData = jsonRpcRequest(method, params);
+
+  const config: AxiosRequestConfig = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const response = await axios.post(url, requestData, config);
+  return response.data;
 };
 
 type MethodSelectorState = `signTransaction` | `getPublicKey`;
-type CurveSelectorState = `secp256k1` | `ed25519`;
+type CurveSelectorState = `ed25519` | `secp256k1`;
 
 type SovereignState = {
   method: MethodSelectorState;
   curve: CurveSelectorState;
   keyId: number;
+  nonce?: number;
+  sequencer?: string;
   message?: string;
-  request?: string;
   response?: string;
 };
 
 export const Sovereign = () => {
   const initialState: SovereignState = {
     method: `signTransaction`,
-    curve: `secp256k1`,
+    curve: `ed25519`,
     keyId: 0,
-    message: 'Some signature message...',
+    nonce: 0,
+    sequencer: 'http://localhost:9000',
+    message:
+      '{"bank":{"Freeze":{"token_address":"sov1lta047h6lta047h6lta047h6lta047h6lta047h6lta047h6ltaq5s0rwf"}}}',
   };
   const [state, setState] = useState(initialState);
 
@@ -58,8 +89,8 @@ export const Sovereign = () => {
             })
           }
         >
-          <option value="secp256k1">secp256k1</option>
           <option value="ed25519">ed25519</option>
+          <option value="secp256k1">secp256k1</option>
         </select>
       </div>
       <div>Key ID:</div>
@@ -81,6 +112,40 @@ export const Sovereign = () => {
           }}
         />
       </div>
+      <div>Nonce:</div>
+      <div>
+        <input
+          type="text"
+          value={state.nonce}
+          onChange={(ev) => {
+            const { value } = ev.target;
+
+            // Allow only positive integers (whole numbers greater than or equal to zero)
+            const regex = /^[0-9\b]+$/u; // Allows digits only
+            if (value === '' || regex.test(value)) {
+              setState({
+                ...state,
+                nonce: parseInt(value, 10),
+              });
+            }
+          }}
+        />
+      </div>
+      <div>Sequencer:</div>
+      <div>
+        <input
+          type="text"
+          disabled={state.method !== `signTransaction`}
+          value={state.sequencer}
+          placeholder="Sequencer address..."
+          onChange={(ev) =>
+            setState({
+              ...state,
+              sequencer: ev.target.value,
+            })
+          }
+        />
+      </div>
       <div>Signature message:</div>
       <div>
         <textarea
@@ -100,19 +165,24 @@ export const Sovereign = () => {
       <div>
         <ExecuteButton
           onClick={async () => {
-            const { method, curve, keyId, message } = state;
+            const { method, curve, keyId, nonce, message } = state;
 
             const path = ['m', "44'", "1551'"];
-            path.push(keyId.toString());
+            if (curve === 'ed25519') {
+              // ed25519 requires hardened paths
+              path.push(`${keyId}'`);
+            } else {
+              path.push(keyId.toString());
+            }
 
             let params;
             if (method === `signTransaction`) {
               params = {
                 path,
                 curve,
-                schema: callMessageSchema,
                 transaction: {
                   message: message || '',
+                  nonce: nonce || 0,
                 },
               };
             } else {
@@ -132,16 +202,25 @@ export const Sovereign = () => {
                 },
               },
             };
-            setState({
-              ...state,
-              request: JSON.stringify(request),
-            });
 
             try {
-              const response = await window.ethereum.request(request);
+              let response = await window.ethereum.request<string>(request);
+              response = response || '';
+
+              console.log(response);
+
+              if (method === `signTransaction`) {
+                response =
+                  (await sendJsonRpcRequest(
+                    state.sequencer || '',
+                    'sequencer_acceptTx',
+                    [{ body: Array.from(hexToBytes(response)) }],
+                  )) || '';
+              }
+
               setState({
                 ...state,
-                response: JSON.stringify(response),
+                response: response || '',
               });
             } catch (e) {
               setState({
@@ -150,16 +229,6 @@ export const Sovereign = () => {
               });
             }
           }}
-        />
-      </div>
-      <div>Request:</div>
-      <div>
-        <textarea
-          disabled
-          value={state.request}
-          placeholder="Snap request..."
-          rows={5}
-          cols={40}
         />
       </div>
       <div>Response:</div>

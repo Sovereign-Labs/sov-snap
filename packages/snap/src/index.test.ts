@@ -1,33 +1,6 @@
 import { installSnap } from '@metamask/snaps-jest';
 import { expect } from '@jest/globals';
 import { assert } from '@metamask/utils';
-import { Schema } from 'borsh';
-
-const callMessageSchema: Schema = {
-  enum: [
-    {
-      struct: {
-        Invoke: {
-          struct: {
-            method: 'string',
-            payload: { array: { type: 'u8' } },
-          },
-        },
-      },
-    },
-    {
-      struct: {
-        Transfer: {
-          struct: {
-            from: { array: { type: 'u8', len: 32 } },
-            to: { array: { type: 'u8', len: 32 } },
-            amount: 'u64',
-          },
-        },
-      },
-    },
-  ],
-};
 
 describe('onRpcRequest', () => {
   describe('getPublicKey', () => {
@@ -69,36 +42,7 @@ describe('onRpcRequest', () => {
   });
 
   describe('signTransaction', () => {
-    it('returns a secp256k1 signature', async () => {
-      const { request, close } = await installSnap();
-
-      const response = request({
-        method: 'signTransaction',
-        params: {
-          path: ['m', "44'", "1551'"],
-          curve: 'secp256k1',
-          schema: callMessageSchema,
-          transaction: {
-            Invoke: {
-              method: 'someMethod',
-              payload: Array(176).fill(5),
-            },
-          },
-        },
-      });
-
-      const ui = await response.getInterface();
-      assert(ui.type === 'confirmation');
-      await ui.ok();
-
-      expect(await response).toRespondWith(
-        '0x3044022037ed1abe499f6699943dc26299e5c24111002ad115e481d126868e68e73eebd40220552312cc86a09ba8160ffc496b24eb04319c6c25ad7f965b59a6938858f00ca5',
-      );
-
-      await close();
-    });
-
-    it('returns a ed25519 signature', async () => {
+    it('returns a ed25519 signed transaction', async () => {
       const { request, close } = await installSnap();
 
       const response = request({
@@ -106,13 +50,15 @@ describe('onRpcRequest', () => {
         params: {
           path: ['m', "44'", "1551'"],
           curve: 'ed25519',
-          schema: callMessageSchema,
           transaction: {
-            Transfer: {
-              from: Array(32).fill(2),
-              to: Array(32).fill(3),
-              amount: 1582,
+            message: {
+              bank: {
+                Freeze: {
+                  token_address: 'sov1lta047h6lta047h6lta047h6lta047h6lta047h6lta047h6ltaq5s0rwf',
+                },
+              },
             },
+            nonce: 0,
           },
         },
       });
@@ -122,7 +68,7 @@ describe('onRpcRequest', () => {
       await ui.ok();
 
       expect(await response).toRespondWith(
-        '0xfd2e4b23a3e3f498664af355b341e833324276270a13f9647dd1f043248f92fccaa037d4cfc9d23f13a295f7d505ee13afb2b10cea548890678f9002947cbb0a',
+        '0x59aef6220a77b31e6bc24fb643be3e2ff701b839eec55e538dacc98b813a141d39d217be7c37e36d3a9c54770e51da96ee5b70543748238633c677b91fcfe10653c19b062b51d011cbbdda344b3da4e714a6eca698bf62583c715ef7d8c70828220000000004fafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafa0000000000000000',
       );
 
       await close();

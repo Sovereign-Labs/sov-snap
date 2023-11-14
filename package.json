@@ -17,6 +17,7 @@
     "packages/*"
   ],
   "scripts": {
+    "update-wasm": "make -C packages/sov-wasm && node scripts/readWasm.js",
     "build": "yarn workspaces foreach --parallel --topological --verbose run build",
     "install-chrome": "./scripts/install-chrome.sh",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
@@ -41,11 +42,14 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.2.1",
-    "prettier-plugin-packagejson": "^2.2.18",
-    "typescript": "^4.7.4"
+    "prettier-plugin-packagejson": "^2.2.18"
   },
   "packageManager": "yarn@3.2.1",
   "engines": {
     "node": ">=18.6.0"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "fs-extra": "^11.1.1"
   }
 }

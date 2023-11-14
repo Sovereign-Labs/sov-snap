@@ -20,6 +20,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
       - run: yarn install --immutable
+      - run: yarn update-wasm
       - run: yarn build
       - run: yarn lint
       - run: yarn test

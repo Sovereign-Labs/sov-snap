@@ -1,5 +1,3 @@
-import { Schema } from 'borsh';
-
 /**
  * The parameters for calling the `getPublicKey` JSON-RPC method.
  *
@@ -29,6 +27,24 @@ export type GetBip32PublicKeyParams = {
 };
 
 /**
+ * The transaction object to be submitted by the UI so the signature can be generated.
+ *
+ * Note: For simplicity, these are not validated by the snap. In production, you
+ * should validate that the request object matches this type before using it.
+ */
+export type Transaction = {
+  /**
+   * The JSON transaction to sign.
+   */
+  message: string;
+
+  /**
+   * The nonce for the transaction signature.
+   */
+  nonce: number;
+};
+
+/**
  * The parameters for calling the `signTransaction` JSON-RPC method.
  *
  * Note: For simplicity, these are not validated by the snap. In production, you
@@ -36,14 +52,9 @@ export type GetBip32PublicKeyParams = {
  */
 export type SignTransactionParams = {
   /**
-   * The borsh schema of the transaction.
+   * The JSON transaction to sign.
    */
-  schema: Schema;
-
-  /**
-   * The transaction to sign.
-   */
-  transaction: any;
+  transaction: Transaction;
 
   /**
    * The BIP-32 path to the account.
