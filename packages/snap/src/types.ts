@@ -66,3 +66,19 @@ export type SignTransactionParams = {
    */
   curve: 'secp256k1' | 'ed25519';
 };
+
+export type WasmInstance = {
+  alloc: (len: number) => number;
+  dealloc: (ptr: number, len: number) => void;
+  serialize_call: (txPtr: number, txLen: number, noncePtr: number) => number;
+  serialize_transaction: (
+    pkPtr: number,
+    pkLen: number,
+    msgPtr: number,
+    msgLen: number,
+    signaturePtr: number,
+    signatureLen: number,
+  ) => number;
+  validate_transaction: (txPtr: number, txLen: number) => number;
+  memory: Uint8Array;
+};

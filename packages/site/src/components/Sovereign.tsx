@@ -23,7 +23,11 @@ const jsonRpcRequest = (method: string, params: any[]): JsonRpcRequest => {
   };
 };
 
-const sendJsonRpcRequest = async (url: string, method: string, params: any[]): Promise<string> => {
+const sendJsonRpcRequest = async (
+  url: string,
+  method: string,
+  params: any[],
+): Promise<string> => {
   const requestData = jsonRpcRequest(method, params);
 
   const config: AxiosRequestConfig = {

@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const inputBinaryFile = './packages/sov-wasm/assets/sov-wasm.wasm';
+const inputBinaryFile = './external/sov-wasm/assets/sov-wasm.wasm';
 const outputTsFile = 'packages/snap/src/module.ts';
 
 const binaryData = fs.readFileSync(inputBinaryFile);
