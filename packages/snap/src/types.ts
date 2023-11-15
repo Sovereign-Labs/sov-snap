@@ -11,11 +11,6 @@ export type GetBip32PublicKeyParams = {
   path: ['m', ...(`${number}` | `${number}'`)[]];
 
   /**
-   * The curve used to derive the account.
-   */
-  curve: 'secp256k1' | 'ed25519';
-
-  /**
    * Whether to return the public key in compressed form.
    */
   compressed?: boolean | undefined;
@@ -60,17 +55,32 @@ export type SignTransactionParams = {
    * The BIP-32 path to the account.
    */
   path: string[];
-
-  /**
-   * The curve used to derive the account.
-   */
-  curve: 'secp256k1' | 'ed25519';
 };
 
+/**
+ * The expected WASM interface from the imported module.
+ */
 export type WasmInstance = {
+  /**
+   * Allocs `len` bytes and returns the pointer.
+   */
   alloc: (len: number) => number;
+
+  /**
+   * Deallocs `len` bytes from the address `ptr`.
+   */
   dealloc: (ptr: number, len: number) => void;
+
+  /**
+   * Serializes a call message into a signable message and returns its pointer.
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   serialize_call: (txPtr: number, txLen: number, noncePtr: number) => number;
+
+  /**
+   * Serializes a transaction into a format that can be sent to a sequencer.
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   serialize_transaction: (
     pkPtr: number,
     pkLen: number,
@@ -79,6 +89,15 @@ export type WasmInstance = {
     signaturePtr: number,
     signatureLen: number,
   ) => number;
+
+  /**
+   * Validates the signature of a provided transaction.
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   validate_transaction: (txPtr: number, txLen: number) => number;
+
+  /**
+   * The WASM memory.
+   */
   memory: Uint8Array;
 };

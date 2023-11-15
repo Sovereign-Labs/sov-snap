@@ -7,7 +7,7 @@
     "url": "https://github.com/Sovereign-Labs/sov-snap.git"
   },
   "source": {
-    "shasum": "Oex2pftLI2hqOqbxr+42UJHwTXNLf6ZOu4pBEACfNs4=",
+    "shasum": "dHbeVd+8Pvoip3rOqq31v+STlhExNRpJAhMukHTom3g=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -31,26 +31,10 @@
           "44'",
           "1551'"
         ],
-        "curve": "secp256k1"
-      },
-      {
-        "path": [
-          "m",
-          "44'",
-          "1551'"
-        ],
         "curve": "ed25519"
       }
     ],
     "snap_getBip32PublicKey": [
-      {
-        "path": [
-          "m",
-          "44'",
-          "1551'"
-        ],
-        "curve": "secp256k1"
-      },
       {
         "path": [
           "m",
