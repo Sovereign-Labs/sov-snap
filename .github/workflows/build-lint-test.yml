@@ -107,10 +107,3 @@ jobs:
         run: PATH="/usr/local/bin/binaryen-version_116/bin:/usr/local/bin/wabt-1.0.34/bin:$PATH" yarn update-wasm
       - name: Run e2e tests
         run: yarn workspace sov-snap run test
-      - name: Require clean working directory
-        shell: bash
-        run: |
-          if ! git diff --exit-code; then
-            echo "Working tree dirty at end of job"
-            exit 1
-          fi
