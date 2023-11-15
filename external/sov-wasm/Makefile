@@ -27,8 +27,8 @@ wasm: ## Build the WASM files
 		$(WAT) \
 		$(PACKAGE_RESTORED) \
 		$(PACKAGE_RESTORED_OPTIMIZED)
-	@mv $(PACKAGE_THIN) $(PACKAGE)
-	@cp $(PACKAGE) $(PACKAGE_SHORT)
+	@mv $(PACKAGE_THIN) $(PACKAGE_SHORT)
+	@rm $(PACKAGE)
 	@echo "Package created: $(PACKAGE)"
 
 help: ## Display this help screen
