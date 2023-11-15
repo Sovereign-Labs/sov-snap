@@ -81,6 +81,22 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
+      - name: Install WASM tools
+        run: |
+          PACKAGE_URL="https://github.com/WebAssembly/binaryen/releases/download/version_116/binaryen-version_116-x86_64-linux.tar.gz"
+          INSTALL_PATH="/usr/local/bin"
+          curl -L $PACKAGE_URL | tar xz -C $INSTALL_PATH
+          echo "export PATH=$INSTALL_PATH/binaryen-version_116/bin:\$PATH" >> $GITHUB_ENV
+        shell: bash
+      - name: Install WABT
+        run: |
+          PACKAGE_URL="https://github.com/WebAssembly/wabt/releases/download/1.0.34/wabt-1.0.34-ubuntu.tar.gz"
+          INSTALL_PATH="/usr/local/bin"
+          curl -L $PACKAGE_URL | tar xz -C $INSTALL_PATH
+          echo "export PATH=$INSTALL_PATH/wabt-1.0.34/bin:\$PATH" >> $GITHUB_ENV
+        shell: bash
+      - name: Setup Rust toolchain
+        run: rustup target add wasm32-wasi
       - name: Restore snap build cache
         uses: actions/cache@v3
         with:
@@ -89,6 +105,8 @@ jobs:
       - run: yarn install --immutable
       - name: Install Google Chrome
         run: yarn install-chrome
+      - name: Update WASM
+        run: yarn update-wasm
       - name: Run e2e tests
         run: yarn workspace sov-snap run test
       - name: Require clean working directory
