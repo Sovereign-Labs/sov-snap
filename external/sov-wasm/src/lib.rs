@@ -8,8 +8,8 @@ use core::{mem, slice};
 use borsh::{BorshDeserialize, BorshSerialize};
 use sov_modules_api::Signature as _;
 
-mod dependencies;
-use dependencies::{Context, RuntimeCall};
+mod definitions;
+use definitions::{Context, RuntimeCall};
 
 pub type PublicKey = <Context as sov_modules_api::Spec>::PublicKey;
 pub type Signature = <Context as sov_modules_api::Spec>::Signature;
