@@ -30,9 +30,6 @@ export type GetBip32PublicKeyParams = Infer<
 
 /**
 * The transaction object to be submitted by the UI so the signature can be generated.
-*
-* Note: For simplicity, these are not validated by the snap. In production, you
-* should validate that the request object matches this type before using it.
 */
 export const TransactionStruct = object({
     /**
@@ -47,9 +44,6 @@ export const TransactionStruct = object({
 
 /**
  * The parameters for calling the `signTransaction` JSON-RPC method.
-*
-* Note: For simplicity, these are not validated by the snap. In production, you
-* should validate that the request object matches this type before using it.
 */
 export const SignTransactionStruct = object({
    /**
