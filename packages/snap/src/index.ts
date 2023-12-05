@@ -44,7 +44,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
           ]),
         },
       });
-      
       if (!approved) {
         throw providerErrors.userRejectedRequest();
       }

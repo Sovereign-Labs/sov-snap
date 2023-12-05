@@ -1,6 +1,5 @@
-import { Bytes } from '@metamask/utils';
 import { Bip32PathStruct } from '@metamask/snaps-utils/*';
-import { Infer, boolean, enums, object, optional, type, string, number, array } from 'superstruct';
+import { Infer, boolean, object, optional, type, string, number, array } from 'superstruct';
 
 
 /**
