@@ -24,7 +24,6 @@ export const GetBip32PublicKeyParamsStruct = type({
   compressed: optional(boolean()),
 });
 
-
 /**
  * The transaction object to be submitted by the UI so the signature can be generated.
  */

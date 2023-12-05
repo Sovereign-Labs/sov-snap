@@ -5,10 +5,10 @@ import { DialogType } from '@metamask/snaps-types';
 import { copyable, heading, panel, text } from '@metamask/snaps-ui';
 import { add0x, assert, bytesToHex, remove0x } from '@metamask/utils';
 import { sign } from '@noble/ed25519';
-import { validate as superstruct_validate } from 'superstruct';
+import { validate as superstructValidate } from 'superstruct';
 
-import type {GetBip32PublicKeyParams, SignTransactionParams } from './types';
-import {GetBip32PublicKeyParamsStruct} from './types';
+import type { SignTransactionParams } from './types';
+import { GetBip32PublicKeyParamsStruct } from './types';
 import { SovWasm } from './wasm';
 
 const wasm = new SovWasm();
@@ -31,14 +31,15 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
     // the return is a plain hex string
     // https://docs.metamask.io/snaps/reference/rpc-api/#returns-5
     case 'getPublicKey': {
-
-      const [err, params] = superstruct_validate(request.params, GetBip32PublicKeyParamsStruct);
-      if (err !== undefined) {
-        throw rpcErrors.invalidParams(err.toString());
+      const [validationErr, params] = superstructValidate(
+        request.params,
+        GetBip32PublicKeyParamsStruct,
+      );
+      if (validationErr !== undefined) {
+        throw rpcErrors.invalidParams(validationErr.toString());
       }
-      
-      const { path, compressed } = params;
 
+      const { path, compressed } = params;
       // eslint-disable-next-line @typescript-eslint/await-thenable
       const approved = await snap.request({
         method: 'snap_dialog',
@@ -55,8 +56,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       if (!approved) {
         throw providerErrors.userRejectedRequest();
       }
-
-    
 
       // eslint-disable-next-line @typescript-eslint/await-thenable
       return await snap.request({
