@@ -1,6 +1,14 @@
 import { Bip32PathStruct } from '@metamask/snaps-utils/*';
-import { Infer, boolean, object, optional, type, string, number, array } from 'superstruct';
-
+import type { Infer } from 'superstruct';
+import {
+  boolean,
+  object,
+  optional,
+  type,
+  string,
+  number,
+  array,
+} from 'superstruct';
 
 /**
  * `type` is used instead of `object` to allow unknown properties.
@@ -16,7 +24,6 @@ export const GetBip32PublicKeyParamsStruct = type({
   compressed: optional(boolean()),
 });
 
-
 /**
  * The parameters for calling the `getPublicKey` JSON-RPC method.
  */
@@ -24,38 +31,36 @@ export type GetBip32PublicKeyParams = Infer<
   typeof GetBip32PublicKeyParamsStruct
 >;
 
-
 /**
-* The transaction object to be submitted by the UI so the signature can be generated.
-*/
+ * The transaction object to be submitted by the UI so the signature can be generated.
+ */
 export const TransactionStruct = object({
-    /**
+  /**
    * The JSON transaction to sign.
    */
-    message: string(),
-    /**
-     * The nonce for the transaction signature.
-     */
-    nonce: number(),
-})
+  message: string(),
+  /**
+   * The nonce for the transaction signature.
+   */
+  nonce: number(),
+});
 
 /**
  * The parameters for calling the `signTransaction` JSON-RPC method.
-*/
+ */
 export const SignTransactionStruct = object({
-   /**
+  /**
    * The JSON transaction to sign.
    */
-   transaction: TransactionStruct,
+  transaction: TransactionStruct,
 
-   /**
+  /**
    * The BIP-32 path to the account.
    */
-   path: array(string()),
-})
+  path: array(string()),
+});
 
 export type SignTransactionParams = Infer<typeof SignTransactionStruct>;
-
 
 /**
  * The expected WASM interface from the imported module.
