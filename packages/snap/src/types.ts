@@ -20,8 +20,6 @@ export const GetBip32PublicKeyParamsStruct = type({
 
 /**
  * The parameters for calling the `getPublicKey` JSON-RPC method.
- *
- * Unknown properties are ignored and passed to `snap_getBip32PublicKey`.
  */
 export type GetBip32PublicKeyParams = Infer<
   typeof GetBip32PublicKeyParamsStruct
