@@ -1,4 +1,4 @@
-import { Bip32PathStruct } from '@metamask/snaps-utils/*';
+import { Bip32PathStruct } from '@metamask/snaps-utils';
 import type { Infer } from 'superstruct';
 import {
   boolean,
@@ -24,12 +24,6 @@ export const GetBip32PublicKeyParamsStruct = type({
   compressed: optional(boolean()),
 });
 
-/**
- * The parameters for calling the `getPublicKey` JSON-RPC method.
- */
-export type GetBip32PublicKeyParams = Infer<
-  typeof GetBip32PublicKeyParamsStruct
->;
 
 /**
  * The transaction object to be submitted by the UI so the signature can be generated.
