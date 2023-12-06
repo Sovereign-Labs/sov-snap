@@ -1,5 +1,4 @@
 import { Bip32PathStruct } from '@metamask/snaps-utils';
-import type { Infer } from 'superstruct';
 import {
   boolean,
   object,
@@ -52,8 +51,6 @@ export const SignTransactionStruct = object({
    */
   path: array(string()),
 });
-
-export type SignTransactionParams = Infer<typeof SignTransactionStruct>;
 
 /**
  * The expected WASM interface from the imported module.

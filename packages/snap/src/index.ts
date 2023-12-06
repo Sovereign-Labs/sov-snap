@@ -7,8 +7,7 @@ import { add0x, assert, bytesToHex, remove0x } from '@metamask/utils';
 import { sign } from '@noble/ed25519';
 import { validate as superstructValidate } from 'superstruct';
 
-import type { SignTransactionParams } from './types';
-import { GetBip32PublicKeyParamsStruct } from './types';
+import { GetBip32PublicKeyParamsStruct, SignTransactionStruct } from './types';
 import { SovWasm } from './wasm';
 
 const wasm = new SovWasm();
@@ -35,6 +34,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
         request.params,
         GetBip32PublicKeyParamsStruct,
       );
+
       if (validationErr !== undefined) {
         throw rpcErrors.invalidParams(validationErr.toString());
       }
@@ -69,7 +69,16 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
     }
 
     case 'signTransaction': {
-      const { transaction, path } = request.params as SignTransactionParams;
+      const [validationErr, params] = superstructValidate(
+        request.params,
+        SignTransactionStruct,
+      );
+
+      if (validationErr !== undefined) {
+        throw rpcErrors.invalidParams(validationErr.toString());
+      }
+
+      const { transaction, path } = params;
 
       try {
         const call = wasm.serializeCall(transaction.message, transaction.nonce);
