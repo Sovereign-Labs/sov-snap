@@ -4,7 +4,6 @@ WASM := "target/wasm32-wasi/release/sov_wasm.wasm"
 WAT := "assets/$(PROJECT).wat"
 WAT_THIN := "assets/$(PROJECT)-thin.wat"
 PACKAGE := "assets/$(PROJECT).wasm"
-PACKAGE_SHORT := "assets/$(PROJECT).wasm"
 PACKAGE_OPTIMIZED := "assets/$(PROJECT)-initial-optimized.wasm"
 PACKAGE_INITIAL_OPTIMIZED := "assets/$(PROJECT)-initial-optimized.wasm"
 PACKAGE_INITIAL_THIN := "assets/$(PROJECT)-initial-thin.wasm"
@@ -26,9 +25,8 @@ wasm: ## Build the WASM files
 		$(WAT) \
 		$(PACKAGE_RESTORED) \
 		$(PACKAGE_RESTORED_OPTIMIZED)
-	@mv $(PACKAGE_THIN) $(PACKAGE_SHORT)
-	@rm $(PACKAGE)
-	@echo "Package created: $(PACKAGE_SHORT)"
+	@mv $(PACKAGE_THIN) $(PACKAGE)
+	@echo "Package created: $(PACKAGE)"
 
 help: ## Display this help screen
 	@grep -h \
