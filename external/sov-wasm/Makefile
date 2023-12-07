@@ -1,17 +1,16 @@
-PROJECT := $(shell sed -n '0,/name\s*=\s*"\(.*\)"/s/name\s*=\s*"\(.*\)"/\1/p' Cargo.toml)
-VERSION := $(shell sed -n '0,/version\s*=\s*"\(.*\)"/s/version\s*=\s*"\(.*\)"/\1/p' Cargo.toml)
+PROJECT := "sov-wasm"
 FLAGS := RUSTFLAGS="$(RUSTFLAGS) --remap-path-prefix $(HOME)= -C link-args=-zstack-size=65536"
-WASM := "target/wasm32-wasi/release/$(shell sed -n '0,/name\s*=\s*"\(.*\)"/s/name\s*=\s*"\(.*\)"/\1/p' Cargo.toml | sed 's/-/_/g').wasm"
-WAT := "assets/$(PROJECT)-$(VERSION).wat"
-WAT_THIN := "assets/$(PROJECT)-$(VERSION)-thin.wat"
-PACKAGE := "assets/$(PROJECT)-$(VERSION).wasm"
+WASM := "target/wasm32-wasi/release/sov_wasm.wasm"
+WAT := "assets/$(PROJECT).wat"
+WAT_THIN := "assets/$(PROJECT)-thin.wat"
+PACKAGE := "assets/$(PROJECT).wasm"
 PACKAGE_SHORT := "assets/$(PROJECT).wasm"
-PACKAGE_OPTIMIZED := "assets/$(PROJECT)-$(VERSION)-initial-optimized.wasm"
-PACKAGE_INITIAL_OPTIMIZED := "assets/$(PROJECT)-$(VERSION)-initial-optimized.wasm"
-PACKAGE_INITIAL_THIN := "assets/$(PROJECT)-$(VERSION)-initial-thin.wasm"
-PACKAGE_RESTORED := "assets/$(PROJECT)-$(VERSION)-restored.wasm"
-PACKAGE_RESTORED_OPTIMIZED := "assets/$(PROJECT)-$(VERSION)-restored-optimized.wasm"
-PACKAGE_THIN := "assets/$(PROJECT)-$(VERSION)-thin.wasm"
+PACKAGE_OPTIMIZED := "assets/$(PROJECT)-initial-optimized.wasm"
+PACKAGE_INITIAL_OPTIMIZED := "assets/$(PROJECT)-initial-optimized.wasm"
+PACKAGE_INITIAL_THIN := "assets/$(PROJECT)-initial-thin.wasm"
+PACKAGE_RESTORED := "assets/$(PROJECT)-restored.wasm"
+PACKAGE_RESTORED_OPTIMIZED := "assets/$(PROJECT)-restored-optimized.wasm"
+PACKAGE_THIN := "assets/$(PROJECT)-thin.wasm"
 
 wasm: ## Build the WASM files
 	@$(FLAGS) cargo build --release --target wasm32-wasi
