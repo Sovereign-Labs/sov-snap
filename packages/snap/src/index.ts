@@ -1,12 +1,13 @@
 import { SLIP10Node } from '@metamask/key-tree';
-import { providerErrors } from '@metamask/rpc-errors';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-types';
 import { DialogType } from '@metamask/snaps-types';
 import { copyable, heading, panel, text } from '@metamask/snaps-ui';
 import { add0x, assert, bytesToHex, remove0x } from '@metamask/utils';
 import { sign } from '@noble/ed25519';
+import { validate as superstructValidate } from 'superstruct';
 
-import type { GetBip32PublicKeyParams, SignTransactionParams } from './types';
+import { GetBip32PublicKeyParamsStruct, SignTransactionStruct } from './types';
 import { SovWasm } from './wasm';
 
 const wasm = new SovWasm();
@@ -29,8 +30,16 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
     // the return is a plain hex string
     // https://docs.metamask.io/snaps/reference/rpc-api/#returns-5
     case 'getPublicKey': {
-      const { path, compressed } = request.params as GetBip32PublicKeyParams;
+      const [validationErr, params] = superstructValidate(
+        request.params,
+        GetBip32PublicKeyParamsStruct,
+      );
 
+      if (validationErr !== undefined) {
+        throw rpcErrors.invalidParams(validationErr.toString());
+      }
+
+      const { path, compressed } = params;
       // eslint-disable-next-line @typescript-eslint/await-thenable
       const approved = await snap.request({
         method: 'snap_dialog',
@@ -44,7 +53,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
           ]),
         },
       });
-
       if (!approved) {
         throw providerErrors.userRejectedRequest();
       }
@@ -61,7 +69,16 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
     }
 
     case 'signTransaction': {
-      const { transaction, path } = request.params as SignTransactionParams;
+      const [validationErr, params] = superstructValidate(
+        request.params,
+        SignTransactionStruct,
+      );
+
+      if (validationErr !== undefined) {
+        throw rpcErrors.invalidParams(validationErr.toString());
+      }
+
+      const { transaction, path } = params;
 
       try {
         const call = wasm.serializeCall(transaction.message, transaction.nonce);
@@ -113,7 +130,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
         const txHex = bytesToHex(tx);
 
         wasm.dealloc();
-
         return txHex;
       } catch (er) {
         wasm.dealloc();
